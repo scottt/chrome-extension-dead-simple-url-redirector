@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+import argparse
+from string import Template
+
+def template_gen(filename, data):
+    with open(filename + '.in') as f:
+        out_data = Template(f.read()).substitute(**data)
+
+    with open(filename, 'w') as f:
+        f.write(out_data)
+
+def main():
+    parser = argparse.ArgumentParser(description='generate custom Chrome URL redirection extension for a specific domain')
+    parser.add_argument('domain', nargs=1, help='example.com, limits the requests the extension can touch')
+    parser.add_argument('host_mappings_file', nargs=1, help='"A.com B.org", filename of file with two hostnames separated by space per line')
+    args = parser.parse_args()
+
+    with open(args.host_mappings_file[0]) as f:
+        lines = f.readlines()
+
+    hostname_mappings = []
+    urls_filter = [] # '*://HOSTNAME/*'
+    for (i, l) in enumerate(lines):
+        try:
+            from_n, to_n = l.split()
+        except ValueError:
+            sys.stderr.write('syntax error on line %d: %r' % (i, l))
+            sys.exit(2)
+        hostname_mappings.append([from_n, to_n])
+        urls_filter.append('*://%s/*' % (from_n,))
+
+    d = dict(domain=args.domain[0], hostname_mappings=hostname_mappings, urls_filter=urls_filter)
+    template_gen('manifest.json', d)
+    template_gen('background.js', d)
+
+if __name__ == '__main__':
+    main()

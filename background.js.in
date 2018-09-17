@@ -1,0 +1,31 @@
+// vim: ts=4 softtabstop=0 expandtab shiftwidth=4 smarttab
+const DEBUG = true;
+chrome.runtime.onInstalled.addListener(function() {
+    if (DEBUG) {
+        console.log('dead simple redirector: onInstalled');
+    }
+});
+
+const HOSTNAME_MAPPINGS = $hostname_mappings
+chrome.webRequest.onBeforeRequest.addListener(
+    function (details) {
+        let i, u = new URL(details.url);
+        for (i = 0; i < HOSTNAME_MAPPINGS.length; i++) {
+            let from_n, to_n = HOSTNAME_MAPPINGS[i];
+            if (u.hostname == from_n) {
+                u.hostname = to_n;
+                break;
+            }
+        }
+        let destUrl = u.toString();
+        if (DEBUG) {
+            console.log('destUrl: ', destUrl);
+        }
+        return { redirectUrl: destUrl };
+    },
+    {
+        /* urls : ["<all_urls>"] */
+        urls: $urls_filter
+    },
+    ['blocking']
+);

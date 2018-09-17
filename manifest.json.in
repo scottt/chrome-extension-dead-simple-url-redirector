@@ -1,0 +1,13 @@
+{
+  "name": "Dead Simple URL Redirector for $domain",
+  "version": "0.1",
+  "description": "Simplistic, feature bare URL redirector for a specific domain",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "permissions": [
+	  "webRequest", "webRequestBlocking", "*://$domain/"
+  ],
+  "manifest_version": 2
+}
