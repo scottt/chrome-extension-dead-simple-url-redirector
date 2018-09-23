@@ -1,5 +1,5 @@
 // vim: ts=4 softtabstop=0 expandtab shiftwidth=4 smarttab
-const DEBUG = true;
+const DEBUG = 0;
 chrome.runtime.onInstalled.addListener(function() {
     if (DEBUG) {
         console.log('dead simple redirector: onInstalled');
@@ -9,9 +9,13 @@ chrome.runtime.onInstalled.addListener(function() {
 const HOSTNAME_MAPPINGS = $hostname_mappings
 chrome.webRequest.onBeforeRequest.addListener(
     function (details) {
-        let i, u = new URL(details.url);
+        let i;
+        let u = new URL(details.url);
         for (i = 0; i < HOSTNAME_MAPPINGS.length; i++) {
-            let from_n, to_n = HOSTNAME_MAPPINGS[i];
+            let [from_n, to_n] = HOSTNAME_MAPPINGS[i];
+            if (DEBUG > 1) {
+                console.log('u.hostname: "' + u.hostname + '"' + ', from_n: "' + from_n + '", to_n: "' + to_n + '"');
+            }
             if (u.hostname == from_n) {
                 u.hostname = to_n;
                 break;

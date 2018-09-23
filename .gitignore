@@ -1,5 +1,7 @@
 manifest.json
 background.js
+MAPPINGS-*
+url-redirector-*.zip
 
 # Swap
 [._]*.s[a-v][a-z]

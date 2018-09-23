@@ -3,6 +3,7 @@
 import sys
 import os
 import argparse
+import zipfile
 from string import Template
 
 def template_gen(filename, data):
@@ -11,6 +12,12 @@ def template_gen(filename, data):
 
     with open(filename, 'w') as f:
         f.write(out_data)
+
+def zipfile_create(filename):
+    'Create zipfile for Firefox (sign as unlisted extension)'
+    with zipfile.ZipFile(filename, 'w') as zf:
+        zf.write('background.js')
+        zf.write('manifest.json')
 
 def main():
     parser = argparse.ArgumentParser(description='generate custom Chrome URL redirection extension for a specific domain')
@@ -35,6 +42,8 @@ def main():
     d = dict(domain=args.domain[0], hostname_mappings=hostname_mappings, urls_filter=urls_filter)
     template_gen('manifest.json', d)
     template_gen('background.js', d)
+    assert(' ' not in d['domain'])
+    zipfile_create('url-redirector-%s.zip' % (d['domain'],))
 
 if __name__ == '__main__':
     main()

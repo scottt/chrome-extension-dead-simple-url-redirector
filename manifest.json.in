@@ -1,5 +1,5 @@
 {
-  "name": "Dead Simple URL Redirector for $domain",
+  "name": "URL Redirector for $domain",
   "version": "0.1",
   "description": "Simplistic, feature bare URL redirector for a specific domain",
   "background": {
@@ -7,7 +7,7 @@
     "persistent": true
   },
   "permissions": [
-	  "webRequest", "webRequestBlocking", "*://$domain/"
+	  "webRequest", "webRequestBlocking", "*://*.$domain/", "*://$domain/"
   ],
   "manifest_version": 2
 }
