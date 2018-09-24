@@ -7,7 +7,7 @@
    Choose "on your own. Your submission will be immediately signed for self-distribution."
 1. "Select a file" -> url-director-_YOUR-DOMAIN_.zip
 1. Download signed `.xpi` file
-1. Go to `about:addons` -> "Extensions" tab -> cog (setup) icon -> "Install Add-on From File..."
-1. Select signed xpi -> Confirm "Add"
+1. Go to `about:addons` -> "Extensions" tab -> cog icon (setup) -> "Install Add-on From File..."
+1. Select downloaded signed `.xpi` file -> "Add" to confirm
 
 Then test if the URL redirection works.

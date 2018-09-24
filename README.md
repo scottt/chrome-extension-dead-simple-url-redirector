@@ -24,12 +24,12 @@ Next, audit the generated `manifest.json` and `background.js`. Start from the pe
 To Load the Extension in Chrome:
 1. Go to `chrome://extensions`
 1. Enable "Developer mode"
-1. Load unpacked -> select directory containing this code
-1. Test that the URL redirections work
+1. "Load unpacked" -> Select directory containing this code
+. Test that the URL redirections work
 
 For Firefox:
 1. Go to `about:debugging`
-1. Load Temporary Add-on
+1. "Load Temporary Add-on"
 1. Select `manifest.json`
 1. See [Firefox.md](Firefox.md) on how to get a signed XPI file that you don't need to manually load each time you restart Firefox
 
@@ -60,7 +60,7 @@ For Firefox:
 }
 ```
 
-## WebRequest.OnBeforeRequest returning BlockingResponse
+## Add WebRequest.OnBeforeRequest listener returning BlockingResponse
 
 Change "background" - "persistent" to true to access the `WebRequest` API:
 ``` manifest.json
@@ -73,10 +73,14 @@ Change "background" - "persistent" to true to access the `WebRequest` API:
         "persistent": true
     },
     "permissions": [
-        "webRequest", "webRequestBlocking", "*://*example.com/"
+        "webRequest", "webRequestBlocking", "*://*.example.com/", "*://example.com/"
     ],
     "manifest_version": 2
 }
+```
+
+``` background.js
+chrome.webRequest.onBeforeRequest.addListener(listener, { urls: [ ... ] }, ['blocking'])
 ```
 
 See: [manifest.json.in](manifest.json.in), [background.js.in](background.js.in)

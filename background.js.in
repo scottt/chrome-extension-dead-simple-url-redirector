@@ -1,17 +1,14 @@
 // vim: ts=4 softtabstop=0 expandtab shiftwidth=4 smarttab
-const DEBUG = 0;
-chrome.runtime.onInstalled.addListener(function() {
-    if (DEBUG) {
-        console.log('dead simple redirector: onInstalled');
-    }
-});
 
-const HOSTNAME_MAPPINGS = $hostname_mappings
+const DEBUG = 0;
+// `SETUP` expands $hostname_mappings to an array of [ [from_host, to_host], ... ] pairs
+const HOSTNAME_MAPPINGS = $hostname_mappings;
+/* See onBeforeRequest API docs:
+ * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onBeforeRequest */
 chrome.webRequest.onBeforeRequest.addListener(
     function (details) {
-        let i;
         let u = new URL(details.url);
-        for (i = 0; i < HOSTNAME_MAPPINGS.length; i++) {
+        for (let i = 0; i < HOSTNAME_MAPPINGS.length; i++) {
             let [from_n, to_n] = HOSTNAME_MAPPINGS[i];
             if (DEBUG > 1) {
                 console.log('u.hostname: "' + u.hostname + '"' + ', from_n: "' + from_n + '", to_n: "' + to_n + '"');
@@ -22,14 +19,15 @@ chrome.webRequest.onBeforeRequest.addListener(
             }
         }
         let destUrl = u.toString();
-        if (DEBUG) {
-            console.log('destUrl: ', destUrl);
-        }
+        if (DEBUG) { console.log('destUrl: ', destUrl); }
+        /* See BlockingResponse docs:
+         * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/BlockingResponse */
         return { redirectUrl: destUrl };
-    },
-    {
-        /* urls : ["<all_urls>"] */
+    }, {
+        /* See webRequest.RequestFilter docs. This filter paramter limits the events sent to the listener
+         * function above, unless `urls: ["<all_urls>"]` is passed.
+         * Here `SETUP` expands $urls_filter to the domain you specified for efficiency. */
         urls: $urls_filter
     },
-    ['blocking']
+    ['blocking'] /* specify listener function returns BlockingResponse */
 );
